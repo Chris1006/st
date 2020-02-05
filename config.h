@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Fira Code Nerd Font:size=12:antialias=true:autohint=true";
+static char *font = "Fura Code Nerd Font:size=12:antialias=true:autohint=true";
 static int borderpx = 2;
 
 /*
@@ -86,22 +86,22 @@ unsigned int tabspaces = 8;
 float alpha = 0.95;
 
 static const char *colorname[] = {
-  "#282936", /* base00 */
-  "#ea51b2", /* base08 */
-  "#ebff87", /* base0B */
-  "#00f769", /* base0A */
-  "#62d6e8", /* base0D */
-  "#b45bcf", /* base0E */
-  "#a1efe4", /* base0C */
-  "#e9e9f4", /* base05 */
-  "#626483", /* base03 */
-  "#b45bcf", /* base09 */
-  "#3a3c4e", /* base01 */
-  "#4d4f68", /* base02 */
-  "#62d6e8", /* base04 */
-  "#f1f2f8", /* base06 */
-  "#00f769", /* base0F */
-  "#f7f7fb", /* base07 */
+  "#282828", /* base00 */
+  "#fb4934", /* base08 */
+  "#b8bb26", /* base0B */
+  "#fabd2f", /* base0A */
+  "#83a598", /* base0D */
+  "#d3869b", /* base0E */
+  "#8ec07c", /* base0C */
+  "#d5c4a1", /* base05 */
+  "#665c54", /* base03 */
+  "#fe8019", /* base09 */
+  "#3c3836", /* base01 */
+  "#504945", /* base02 */
+  "#bdae93", /* base04 */
+  "#ebdbb2", /* base06 */
+  "#d65d0e", /* base0F */
+  "#fbf1c7", /* base07 */
 };
 
 unsigned int defaultfg = 7;
