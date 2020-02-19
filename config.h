@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Fura Code Nerd Font:size=12:antialias=true:autohint=true";
+static char *font = "Fura Code Nerd Font:size=11:antialias=true:autohint=true";
 static int borderpx = 2;
 
 /*
