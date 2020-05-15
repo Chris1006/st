@@ -11,13 +11,15 @@ static int borderpx = 2;
 /*
  * What program is execed by st depends of these precedence rules:
  * 1: program passed with -e
- * 2: utmp option
+ * 2: scroll and/or utmp
  * 3: SHELL environment variable
  * 4: value of shell in /etc/passwd
  * 5: value of shell in config.h
  */
 static char *shell = "/bin/sh";
 char *utmp = NULL;
+/* scroll program: to enable use a string like "scroll" */
+char *scroll = NULL;
 char *stty_args = "stty raw pass8 nl -echo -iexten -cstopb 38400";
 
 /* identification sequence returned in DA and DECID */
@@ -41,9 +43,14 @@ static unsigned int tripleclicktimeout = 600;
 /* alt screens */
 int allowaltscreen = 1;
 
-/* frames per second st should at maximum draw to the screen */
-static unsigned int xfps = 120;
-static unsigned int actionfps = 30;
+/*
+ * draw latency range in ms - from new content/keypress/etc until drawing.
+ * within this range, st draws when content stops arriving (idle). mostly it's
+ * near minlatency, but it waits longer for slow updates to avoid partial draw.
+ * low minlatency will tear/flicker more, as it can "detect" idle too early.
+ */
+static double minlatency = 8;
+static double maxlatency = 33;
 
 /*
  * blinking timeout (set to 0 to disable blinking) for the terminal blinking
@@ -83,31 +90,32 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* bg opacity */
-float alpha = 0.95;
+ float alpha = 0.95;
 
 static const char *colorname[] = {
-  "#282828", /* base00 */
-  "#fb4934", /* base08 */
-  "#b8bb26", /* base0B */
-  "#fabd2f", /* base0A */
-  "#83a598", /* base0D */
-  "#d3869b", /* base0E */
-  "#8ec07c", /* base0C */
-  "#d5c4a1", /* base05 */
-  "#665c54", /* base03 */
-  "#fe8019", /* base09 */
-  "#3c3836", /* base01 */
-  "#504945", /* base02 */
-  "#bdae93", /* base04 */
-  "#ebdbb2", /* base06 */
-  "#d65d0e", /* base0F */
-  "#fbf1c7", /* base07 */
+    "#282828", /* base00 */
+    "#fb4934", /* base08 */
+    "#b8bb26", /* base0B */
+    "#fabd2f", /* base0A */
+    "#83a598", /* base0D */
+    "#d3869b", /* base0E */
+    "#8ec07c", /* base0C */
+    "#d5c4a1", /* base05 */
+    "#665c54", /* base03 */
+    "#fe8019", /* base09 */
+    "#3c3836", /* base01 */
+    "#504945", /* base02 */
+    "#bdae93", /* base04 */
+    "#ebdbb2", /* base06 */
+    "#d65d0e", /* base0F */
+    "#fbf1c7", /* base07 */
 };
 
 unsigned int defaultfg = 7;
 unsigned int defaultbg = 0;
 static unsigned int defaultcs = 13;
 static unsigned int defaultrcs = 0;
+
 
 /*
  * Default shape of cursor
@@ -168,7 +176,7 @@ MouseKey mkeys[] = {
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 
-static char *openurlcmd[] = { "/bin/sh", "-c",
+ static char *openurlcmd[] = { "/bin/sh", "-c",
     "sed 's/.*│//g' | tr -d '\n' | grep -aEo '(((http|https)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./&%?$#=_-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)'| uniq | sed 's/^www./http:\\/\\/www\\./g' | dmenu -i -p 'Follow which url?' -l 10 | xargs -r xdg-open",
     "externalpipe", NULL };
 
@@ -177,6 +185,7 @@ static char *copyurlcmd[] = { "/bin/sh", "-c",
     "externalpipe", NULL };
 
 static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NULL };
+
 
 static Shortcut shortcuts[] = {
 	/* mask                 keysym          function        argument */
@@ -194,9 +203,6 @@ static Shortcut shortcuts[] = {
 	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-    { MODKEY,               XK_l,           externalpipe,   {.v = openurlcmd } },
-	{ MODKEY,               XK_y,           externalpipe,   {.v = copyurlcmd } },
-	{ MODKEY,               XK_o,           externalpipe,   {.v = copyoutput } },
 };
 
 /*
