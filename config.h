@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Fura Code Nerd Font:size=11:antialias=true:autohint=true";
+static char *font = "Fira Code:size=11:antialias=true:autohint=true";
 static int borderpx = 2;
 
 /*
@@ -42,6 +42,10 @@ static unsigned int tripleclicktimeout = 600;
 
 /* alt screens */
 int allowaltscreen = 1;
+
+/* allow certain non-interactive (insecure) window operations such as:
+   setting the clipboard text */
+int allowwindowops = 0;
 
 /*
  * draw latency range in ms - from new content/keypress/etc until drawing.
@@ -90,32 +94,41 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* bg opacity */
- float alpha = 0.9;
+float alpha = 0.85;
 
 static const char *colorname[] = {
-    "#282828", /* base00 */
-    "#fb4934", /* base08 */
-    "#b8bb26", /* base0B */
-    "#fabd2f", /* base0A */
-    "#83a598", /* base0D */
-    "#d3869b", /* base0E */
-    "#8ec07c", /* base0C */
-    "#d5c4a1", /* base05 */
-    "#665c54", /* base03 */
-    "#fe8019", /* base09 */
-    "#3c3836", /* base01 */
-    "#504945", /* base02 */
-    "#bdae93", /* base04 */
-    "#ebdbb2", /* base06 */
-    "#d65d0e", /* base0F */
-    "#fbf1c7", /* base07 */
+	"#282828", /* hard contrast: #1d2021 / soft contrast: #32302f */
+	"#cc241d",
+	"#98971a",
+	"#d79921",
+	"#458588",
+	"#b16286",
+	"#689d6a",
+	"#a89984",
+	"#928374",
+	"#fb4934",
+	"#b8bb26",
+	"#fabd2f",
+	"#83a598",
+	"#d3869b",
+	"#8ec07c",
+	"#ebdbb2",
+	[255] = 0,
+	/* more colors can be added after 255 to use with DefaultXX */
+	"#add8e6", /* 256 -> cursor */
+	"#555555", /* 257 -> rev cursor*/
+	"#282828", /* 258 -> bg */
+	"#ebdbb2", /* 259 -> fg */
 };
 
+/*
+ * Default colors (colorname index)
+ * foreground, background, cursor, reverse cursor
+ */
 unsigned int defaultfg = 7;
-unsigned int defaultbg = 0;
-static unsigned int defaultcs = 13;
-static unsigned int defaultrcs = 0;
-
+unsigned int defaultbg = 258;
+static unsigned int defaultcs = 256;
+static unsigned int defaultrcs = 257;
 
 /*
  * Default shape of cursor
@@ -160,7 +173,9 @@ static uint forcemousemod = ShiftMask;
 static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
 	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
+	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
+	{ ShiftMask,            Button5, ttysend,        {.s = "\033[6;2~"} },
 	{ XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"} },
   { XK_NO_MOD,            Button4,              ttysend,      {.s = "\031"} },
 	{ XK_NO_MOD,            Button5,              ttysend,      {.s = "\005"} },
@@ -175,17 +190,6 @@ MouseKey mkeys[] = {
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
-
- static char *openurlcmd[] = { "/bin/sh", "-c",
-    "sed 's/.*│//g' | tr -d '\n' | grep -aEo '(((http|https)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./&%?$#=_-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)'| uniq | sed 's/^www./http:\\/\\/www\\./g' | dmenu -i -p 'Follow which url?' -l 10 | xargs -r xdg-open",
-    "externalpipe", NULL };
-
-static char *copyurlcmd[] = { "/bin/sh", "-c",
-    "sed 's/.*│//g' | tr -d '\n' | grep -aEo '(((http|https)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./&%?$#=_-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)' | uniq | sed 's/^www./http:\\/\\/www\\./g' | dmenu -i -p 'Copy which url?' -l 10 | tr -d '\n' | xclip -selection clipboard",
-    "externalpipe", NULL };
-
-static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NULL };
-
 
 static Shortcut shortcuts[] = {
 	/* mask                 keysym          function        argument */
