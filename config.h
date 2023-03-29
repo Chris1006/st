@@ -97,8 +97,29 @@ unsigned int tabspaces = 8;
 float alpha = 0.85;
 
 const char *colorname[] = {
+	"#3b4252", /* black   */
+	"#bf616a", /* red     */
+	"#a3be8c", /* green   */
+	"#ebcb8b", /* yellow  */
+	"#81a1c1", /* blue    */
+	"#b48ead", /* magenta */
+	"#88c0d0", /* cyan    */
+	"#e5e9f0", /* white   */
+ 	"#4c566a", /* black   */
+	"#bf616a", /* red     */
+	"#a3be8c", /* green   */
+	"#ebcb8b", /* yellow  */
+  "#81a1c1", /* blue    */
+	"#b48ead", /* magenta */
+	"#8fbcbb", /* cyan    */
+  "#eceff4", /* white   */
+  [255] = 0,
+  
+	"#d8dee9", /* default foreground colour */
+	"#2e3440", /* default background colour */
+  /*
   "#1d2021", /* hard contrast: #1d2021 / soft contrast: #32302f */
-	"#cc241d",
+/*	"#cc241d",
 	"#98971a",
 	"#d79921",
 	"#458588",
@@ -112,15 +133,19 @@ const char *colorname[] = {
 	"#83a598",
 	"#d3869b",
 	"#8ec07c",
-	"#ebdbb2", 
+	"#ebdbb2", */
 };
 /* Default colors (colorname index)
  * foreground, background, cursor */
- unsigned int defaultbg = 0;
+/* unsigned int defaultbg = 0;
  unsigned int defaultfg = 15;
  unsigned int defaultcs = 15;
  unsigned int defaultrcs= 257;
-
+*/
+unsigned int defaultfg = 256;
+unsigned int defaultbg = 257;
+ unsigned int defaultcs = 256;
+ static unsigned int defaultrcs = 257;
 /*
  * Default shape of cursor
  * 2: Block ("█")
