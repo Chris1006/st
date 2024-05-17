@@ -828,8 +828,6 @@ xloadcols(void)
 		}
 
 	/* set alpha value of bg color */
-	if (opt_alpha)
-		alpha = strtof(opt_alpha, NULL);
 	dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
 	dc.col[defaultbg].pixel &= 0x00FFFFFF;
 	dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
@@ -862,6 +860,13 @@ xsetcolorname(int x, const char *name)
 
 	XftColorFree(xw.dpy, xw.vis, xw.cmap, &dc.col[x]);
 	dc.col[x] = ncolor;
+
+  if (x == defaultbg) {
+    dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
+    dc.col[defaultbg].pixel &= 0x00FFFFFF;
+    dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
+
+  }
 
 	return 0;
 }
@@ -2083,7 +2088,8 @@ main(int argc, char *argv[])
 		allowaltscreen = 0;
 		break;
 	case 'A':
-		opt_alpha = EARGF(usage());
+		alpha = strtof(EARGF(usage()), NULL);
+    LIMIT(alpha, 0.0, 1.0);
 		break;
 	case 'c':
 		opt_class = EARGF(usage());
