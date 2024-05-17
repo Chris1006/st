@@ -53,7 +53,7 @@ int allowwindowops = 0;
  * near minlatency, but it waits longer for slow updates to avoid partial draw.
  * low minlatency will tear/flicker more, as it can "detect" idle too early.
  */
-static double minlatency = 8;
+static double minlatency = 2;
 static double maxlatency = 33;
 
 /*
@@ -117,23 +117,6 @@ const char *colorname[] = {
   
 	"#d8dee9", /* default foreground colour */
 	"#2e3440", /* default background colour */
-  /*
-  "#1d2021", /* hard contrast: #1d2021 / soft contrast: #32302f */
-/*	"#cc241d",
-	"#98971a",
-	"#d79921",
-	"#458588",
-	"#b16286",
-	"#689d6a",
-	"#a89984",
-	"#928374",
-	"#fb4934",
-	"#b8bb26",
-	"#fabd2f",
-	"#83a598",
-	"#d3869b",
-	"#8ec07c",
-	"#ebdbb2", */
 };
 /* Default colors (colorname index)
  * foreground, background, cursor */
